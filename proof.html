@@ -357,7 +357,7 @@
   .footGrid ul li a:hover{color:var(--green);}
   .footBottom{display:flex;justify-content:space-between;align-items:center;padding-top:28px;font-size:12.5px;color:var(--steel);flex-wrap:wrap;gap:12px;}
 
-  @media (max-width:1120px){
+  @media (max-width:900px){
     nav ul{gap:20px;font-size:13.5px;}
     .navcta{gap:12px;}
     .btn{padding:11px 16px;}
@@ -437,7 +437,7 @@
   .logo img{max-width:min(210px,42vw);height:auto;}
   .stackly-extra{overflow:hidden;}
   .socialLinks a:hover{border-color:var(--green)!important;color:var(--green)!important;}
-  @media (max-width:1120px){
+  @media (max-width:900px){
     .logo img{max-width:170px;}
     .navrow{gap:16px;}
     nav ul{gap:14px;font-size:13px;}
@@ -537,12 +537,12 @@
   .logo img{width:min(210px,38vw)!important;max-width:210px;height:auto!important;}
   .mobileMenuCtas{display:none;}
 
-  @media (min-width:1121px){
+  @media (min-width:901px){
     nav ul{gap:clamp(14px,1.7vw,34px);}
     .navcta{flex-shrink:0;}
   }
 
-  @media (max-width:1120px){
+  @media (max-width:900px){
     header{padding:16px 0;}
     .navrow{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:14px;padding:0 20px;}
     .logo{grid-column:1;}
@@ -615,6 +615,55 @@
     .storeBtn{width:100%;justify-content:center;}
     .footBottom{align-items:flex-start;}
   }
+
+  /* ===== FINAL RESPONSIVE NORMALIZER ===== */
+  @media (min-width:901px){
+    header .navrow{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:24px!important;padding:0 28px!important;}
+    header nav{display:block!important;position:absolute!important;left:50%!important;transform:translateX(-50%)!important;grid-column:auto!important;justify-self:auto!important;}
+    header nav ul{display:flex!important;position:static!important;inset:auto!important;width:auto!important;height:auto!important;background:transparent!important;flex-direction:row!important;align-items:center!important;justify-content:center!important;padding:0!important;border:0!important;gap:clamp(18px,2vw,34px)!important;overflow:visible!important;}
+    header nav ul li a{font-size:14.5px!important;font-family:'Inter',sans-serif!important;font-weight:500!important;color:var(--steel)!important;}
+    header nav ul li a:hover{color:var(--paper)!important;}
+    header nav ul .mobileMenuCtas{display:none!important;}
+    header .navToggle{display:none!important;}
+    header .navcta{display:flex!important;align-items:center!important;gap:12px!important;margin-left:auto!important;grid-column:auto!important;justify-self:auto!important;}
+    header .navcta .btn{display:inline-flex!important;width:auto!important;min-width:auto!important;white-space:nowrap!important;}
+  }
+  @media (max-width:900px){
+    header .navrow{display:grid!important;grid-template-columns:auto 1fr auto!important;align-items:center!important;gap:12px!important;padding:0 18px!important;}
+    header .logo{grid-column:1!important;}
+    header .logo img{width:min(160px,46vw)!important;height:auto!important;}
+    header nav{display:block!important;position:static!important;transform:none!important;grid-column:2!important;justify-self:end!important;}
+    header nav ul{display:none!important;}
+    header .navcta{display:flex!important;grid-column:2!important;justify-self:end!important;margin-left:0!important;}
+    header .navcta .btn-ghost{display:none!important;}
+    header .navcta .btn-primary{display:inline-flex!important;width:auto!important;min-height:42px!important;padding:0 14px!important;font-size:13px!important;white-space:nowrap!important;}
+    header .navToggle{display:flex!important;grid-column:3!important;justify-self:end!important;width:42px!important;height:42px!important;align-items:center!important;justify-content:center!important;border:1px solid var(--line)!important;border-radius:8px!important;background:rgba(236,233,224,.03)!important;position:relative!important;z-index:1001!important;}
+    header nav ul.mobile-open{display:flex!important;position:fixed!important;inset:0!important;width:100vw!important;height:100vh!important;background:var(--ink)!important;flex-direction:column!important;align-items:flex-start!important;justify-content:center!important;padding:96px 28px 34px!important;border:0!important;gap:22px!important;z-index:1000!important;overflow:auto!important;}
+    header nav ul.mobile-open li a{font-size:clamp(21px,5vw,28px)!important;color:var(--paper)!important;font-family:'Space Grotesk',sans-serif!important;font-weight:700!important;}
+    header nav ul.mobile-open .mobileMenuCtas{display:grid!important;grid-template-columns:1fr!important;gap:12px!important;width:100%!important;margin-top:18px!important;padding-top:22px!important;border-top:1px solid var(--line)!important;}
+    header nav ul.mobile-open .mobileMenuCtas .btn,header nav ul.mobile-open .mobileMenuCtas .themeToggleBtn{width:100%!important;height:48px!important;}
+    body.menuOpen{overflow:hidden!important;}
+  }
+  @media (max-width:520px){
+    header .navrow{padding:0 14px!important;}
+    header .navcta{display:none!important;}
+  }
+
+  /* ===== ACTIVE MENU STATE ===== */
+  header nav > ul > li > a{
+    position:relative!important;
+    transition:color .2s ease, box-shadow .2s ease!important;
+  }
+  header nav > ul > li > a.active,header nav > ul > li > a[aria-current="page"]{
+    color:var(--paper)!important;
+    box-shadow:inset 0 -2px 0 var(--green)!important;
+  }
+  @media(max-width:900px){
+    header nav > ul > li > a.active,header nav > ul > li > a[aria-current="page"]{
+      color:var(--green)!important;
+      box-shadow:none!important;
+    }
+  }
 </style>
 </head>
 <body>
@@ -633,17 +682,15 @@
     <nav>
       <ul>
         <li><a href="index.html">Home</a></li>
-        <li><a href="markets.html">Markets</a></li>
-        <li><a href="how.html">How it works</a></li>
-        <li><a href="platform.html">Platform</a></li>
-        <li><a href="pricing.html">Pricing</a></li>
-        <li><a href="security.html">Security</a></li>
-        <li><a href="faq.html">FAQ</a></li>
+        <li><a href="about.html">About us</a></li>
+        <li><a href="platform.html">Service</a></li>
+        <li><a href="blog.html">Blog</a></li>
+        <li><a href="contact.html">Contact</a></li>
       </ul>
     </nav>
     <div class="navcta">
-      <a href="login.html" class="btn btn-ghost">Log in</a>
-      <a href="signup.html" class="btn btn-primary">Open account</a>
+      <a href="login.html" class="btn btn-ghost">Login</a>
+      <a href="signup.html" class="btn btn-primary">Signup</a>
     </div>
     <div class="navToggle" id="navToggle"><span></span><span></span><span></span></div>
   </div>
@@ -784,11 +831,11 @@
       </div>
       <div>
         <h5>Company</h5>
-        <ul><li><a href="404.html">About</a></li><li><a href="404.html">Careers</a></li><li><a href="404.html">Press</a></li><li><a href="security.html">Security</a></li></ul>
+        <ul><li><a href="about.html">About</a></li><li><a href="404.html">Careers</a></li><li><a href="404.html">Press</a></li><li><a href="security.html">Security</a></li></ul>
       </div>
       <div>
         <h5>Support</h5>
-        <ul><li><a href="faq.html">FAQ</a></li><li><a href="login.html">Login</a></li><li><a href="signup.html">Signup</a></li><li><a href="404.html">Contact</a></li><li><a href="404.html">Fee schedule</a></li><li><a href="404.html">Disclosures</a></li></ul>
+        <ul><li><a href="faq.html">FAQ</a></li><li><a href="login.html">Login</a></li><li><a href="signup.html">Signup</a></li><li><a href="contact.html">Contact</a></li><li><a href="404.html">Fee schedule</a></li><li><a href="404.html">Disclosures</a></li></ul>
       </div>
     </div>
     <div class="footBottom">
@@ -806,7 +853,7 @@ if(navToggle && navUl){
   if(!navUl.querySelector('.mobileMenuCtas')){
     const ctas = document.createElement('li');
     ctas.className = 'mobileMenuCtas';
-    ctas.innerHTML = '<button class="themeToggleBtn" type="button" data-theme-toggle>White mode</button><a href="login.html" class="btn btn-ghost">Log in</a><a href="signup.html" class="btn btn-primary">Create account</a>';
+    ctas.innerHTML = '<button class="themeToggleBtn" type="button" data-theme-toggle>White mode</button><a href="login.html" class="btn btn-ghost">Login</a><a href="signup.html" class="btn btn-primary">Signup</a>';
     navUl.appendChild(ctas);
   }
   navToggle.addEventListener('click', ()=>{
@@ -1035,6 +1082,37 @@ document.querySelectorAll('.faqItem').forEach(item=>{
     const next = document.body.classList.contains('lightMode') ? 'dark' : 'light';
     localStorage.setItem(key, next);
     applyTheme(next);
+  });
+})();
+</script>
+<script>
+(function(){
+  const menuLinks = Array.from(document.querySelectorAll('header nav > ul > li:not(.mobileMenuCtas) > a'));
+  if(!menuLinks.length) return;
+  const currentPage = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
+  const aliases = {
+    'index.html':'index.html',
+    'about.html':'about.html',
+    'platform.html':'platform.html',
+    'blog.html':'blog.html',
+    'contact.html':'contact.html'
+  };
+  const activePage = aliases[currentPage] || '';
+  function setActive(target){
+    menuLinks.forEach(link=>{
+      const href = (link.getAttribute('href') || '').split('#')[0].split('/').pop().toLowerCase() || 'index.html';
+      const isActive = href === target;
+      link.classList.toggle('active', isActive);
+      if(isActive) link.setAttribute('aria-current','page');
+      else link.removeAttribute('aria-current');
+    });
+  }
+  setActive(activePage);
+  menuLinks.forEach(link=>{
+    link.addEventListener('click', ()=>{
+      const href = (link.getAttribute('href') || '').split('#')[0].split('/').pop().toLowerCase() || 'index.html';
+      setActive(href);
+    });
   });
 })();
 </script>
