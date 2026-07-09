@@ -23,7 +23,11 @@
   .btn{display:inline-flex;align-items:center;justify-content:center;height:44px;border-radius:8px;border:1px solid var(--line);padding:0 18px;color:var(--paper);text-decoration:none;font-weight:700}
   .btn.primary{background:var(--green);border-color:var(--green);color:var(--ink)}
   .meta{margin-top:22px;color:var(--gold);font:600 12px 'JetBrains Mono',monospace}
+  html,body{width:100%;max-width:100%;overflow-x:hidden}
+  .page,.panel,.actions{min-width:0}
+  .btn{white-space:normal;text-align:center}
   @media(max-width:640px){body{padding:18px}.logo img{width:min(200px,70vw)}.panel{padding:32px 20px}.actions{display:grid}.btn{width:100%}}
+  @media(max-width:420px){body{padding:14px}.panel{padding:28px 16px}.logo{margin-bottom:30px}}
 </style>
 </head>
 <body>
