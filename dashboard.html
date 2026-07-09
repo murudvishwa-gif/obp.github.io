@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard - Stackly</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--ink:#0A0E1A;--ink-soft:#121729;--ink-card:#171D33;--paper:#ECE9E0;--paper-dim:#A9A69C;--line:rgba(236,233,224,.12);--green:#00C896;--red:#FF5C5C;--gold:#C9A227;--steel:#8890A3;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{min-height:100vh;background:var(--ink);color:var(--paper);font-family:Inter,sans-serif;-webkit-font-smoothing:antialiased}
+  body.lightMode{--ink:#F6F7F3;--ink-soft:#FFFFFF;--ink-card:#FFFFFF;--paper:#101521;--paper-dim:#4D5564;--line:rgba(10,14,26,.13);--steel:#5F6878;}
+  a{color:inherit;text-decoration:none}
+  button{font:inherit}
+  .shell{display:grid;grid-template-columns:280px 1fr;min-height:100vh}
+  aside{background:var(--ink-soft);border-right:1px solid var(--line);padding:26px 20px;display:flex;flex-direction:column;gap:24px}
+  .logo{display:flex;align-items:center}
+  .profile,.card,.panel{background:var(--ink-card);border:1px solid var(--line);border-radius:8px}
+  .profile{padding:16px}
+  .profile b{display:block;font-family:'Space Grotesk',sans-serif;font-size:18px}
+  .profile span{display:block;color:var(--steel);font:500 12px 'JetBrains Mono',monospace;margin-top:6px}
+  nav{display:grid;gap:7px}
+  nav a{padding:11px 12px;border-radius:8px;color:var(--paper-dim);font-size:14px;font-weight:700;cursor:pointer}
+  nav a.active,nav a:hover{background:rgba(0,200,150,.09);color:var(--paper)}
+  .main{padding:30px;overflow:hidden}
+  .top{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;margin-bottom:22px}
+  .topActions{display:flex;align-items:center;gap:10px;position:relative}
+  .rightActions{display:flex;align-items:center;gap:10px}
+  .dashMenuBtn{display:none}
+  .iconBtn{width:42px;height:42px;border-radius:8px;border:1px solid var(--line);background:var(--ink-card);color:var(--paper);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;position:relative}
+  .iconBtn:hover,.profileBtn:hover{border-color:rgba(0,200,150,.45)}
+  .notifDot{position:absolute;top:8px;right:8px;width:8px;height:8px;border-radius:50%;background:var(--red);box-shadow:0 0 0 3px rgba(255,92,92,.16)}
+  .profileBtn{height:42px;border-radius:8px;border:1px solid var(--line);background:var(--ink-card);color:var(--paper);display:flex;align-items:center;gap:10px;padding:0 12px;cursor:pointer}
+  .avatar{width:28px;height:28px;border-radius:50%;background:var(--green);color:var(--ink);display:flex;align-items:center;justify-content:center;font:800 12px 'JetBrains Mono',monospace}
+  .profileName{display:none}
+  .dropdown{display:none;position:absolute;right:0;top:50px;width:280px;background:var(--ink-card);border:1px solid var(--line);border-radius:8px;padding:16px;z-index:20;box-shadow:0 18px 50px rgba(0,0,0,.28)}
+  .dropdown.show{display:block}
+  .dropdown h3{font-family:'Space Grotesk',sans-serif;font-size:18px;margin-bottom:4px}
+  .dropdown p{color:var(--steel);font-size:12.5px;line-height:1.5}
+  .dropdown .miniList{display:grid;gap:10px;margin-top:14px}
+  .dropdown .miniList div{display:flex;justify-content:space-between;gap:12px;border-top:1px solid var(--line);padding-top:10px;font-size:12.5px;color:var(--steel)}
+  .dropdown .miniList b{color:var(--paper);font-weight:700}
+  h1{font-family:'Space Grotesk',sans-serif;font-size:clamp(30px,4vw,46px);line-height:1.05}
+  .sub{color:var(--steel);font-size:14px;margin-top:8px;line-height:1.6}
+  .btn{display:inline-flex;align-items:center;justify-content:center;height:42px;border-radius:8px;border:1px solid var(--line);background:transparent;color:var(--paper);padding:0 16px;font-weight:700;cursor:pointer}
+  .btn.primary{background:var(--green);border-color:var(--green);color:var(--ink)}
+  .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}
+  .card{padding:18px}
+  .label{color:var(--steel);font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.08em}
+  .value{font:700 27px 'Space Grotesk',sans-serif;margin-top:10px}
+  .trend{color:var(--green);font:600 12px 'JetBrains Mono',monospace;margin-top:7px}
+  .down{color:var(--red)}
+  .gold{color:var(--gold)}
+  .view{display:none}
+  .view.active{display:block}
+  .grid{display:grid;grid-template-columns:1.35fr .65fr;gap:18px}
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px}
+  .panel{padding:20px}
+  .panelHead{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-bottom:16px}
+  .panelHead h2{font-family:'Space Grotesk',sans-serif;font-size:20px}
+  .chip{border:1px solid var(--line);border-radius:999px;color:var(--paper-dim);padding:6px 10px;font:600 11px 'JetBrains Mono',monospace;white-space:nowrap}
+  .chart{height:300px;border-bottom:1px solid var(--line)}
+  .chart svg{width:100%;height:100%}
+  table{width:100%;border-collapse:collapse}
+  th,td{border-bottom:1px solid var(--line);padding:13px 0;text-align:left;font-size:13.5px}
+  th{color:var(--steel);font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+  td:last-child,th:last-child{text-align:right}
+  .list{display:grid;gap:12px}
+  .item{display:flex;justify-content:space-between;gap:14px;border:1px solid var(--line);background:rgba(236,233,224,.03);border-radius:8px;padding:14px}
+  .item b{display:block;font-size:14px}
+  .item span{display:block;color:var(--steel);font-size:12.5px;margin-top:4px}
+  .item strong{font:700 13px 'JetBrains Mono',monospace;color:var(--green);white-space:nowrap}
+  .toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px}
+  .themeToggleBtn{height:42px;border-radius:8px;border:1px solid var(--line);background:transparent;color:var(--paper);font-weight:700;cursor:pointer;padding:0 14px;}
+  body.lightMode .themeToggleBtn{background:#101521;color:#FFFFFF;border-color:#101521;}
+  .adminOnly{display:none}
+  body.admin .adminOnly{display:block}
+  body.admin nav .adminOnly{display:block}
+  @media(max-width:1080px){.shell{grid-template-columns:1fr}aside{position:relative}.cards{grid-template-columns:repeat(2,1fr)}.grid,.split{grid-template-columns:1fr}}
+  @media(max-width:640px){.main{padding:20px 16px}.top{flex-direction:column}.topActions{width:100%;justify-content:space-between}.profileName{max-width:110px}.cards{grid-template-columns:1fr}aside{padding:18px}.toolbar .btn{width:100%}}
+  @media(max-width:1080px){
+    .dashMenuBtn{display:inline-flex}
+    aside{display:none;position:fixed;inset:0;z-index:1000;background:#0A0E1A;padding:28px;overflow:auto;}
+    aside.open{display:flex;}
+    body.dashMenuOpen{overflow:hidden;}
+    aside{gap:18px;}
+    .logo img{width:min(210px,52vw)!important;}
+    nav,body.admin nav{grid-template-columns:1fr;}
+    nav a{text-align:left;font-size:24px;padding:12px 4px;font-family:'Space Grotesk',sans-serif;}
+    .profile{margin:6px 0 10px;}
+  }
+  @media(max-width:760px){
+    .top{display:grid;grid-template-columns:1fr;gap:14px;}
+    .topActions{grid-row:1;width:100%;justify-content:space-between;}
+    .top > div:first-child{grid-row:2;}
+    .panel{padding:16px;overflow-x:auto;}
+    table{min-width:520px;}
+    .dropdown{right:0;width:min(280px,calc(100vw - 32px));}
+    .toolbar{display:grid;grid-template-columns:1fr;}
+    .value{font-size:24px;}
+  }
+  @media(max-width:420px){
+    .logo img{width:145px!important;}
+    .main{padding:18px 12px;}
+    aside{padding:16px 12px;}
+    .topActions{gap:8px;justify-content:space-between;}
+    .rightActions{gap:8px;}
+    .iconBtn,.profileBtn{height:40px;}
+    h1{font-size:32px;}
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+  <aside>
+    <a href="dashboard.html" class="logo" id="dashboardLogo"><img src="assets/stackly-logo.webp" alt="STACKLY" style="width:210px;height:auto;display:block;"></a>
+    <div class="profile"><b id="roleLabel">User</b><span id="domainLabel">user.meridianmarkets.in</span></div>
+    <nav>
+      <a class="active" data-view-link="overview">Dashboard</a>
+      <a data-view-link="portfolio">Portfolio</a>
+      <a data-view-link="orders">Orders</a>
+      <a data-view-link="domains">Domains</a>
+      <a data-view-link="risk">Risk</a>
+      <a data-view-link="reports">Reports</a>
+      <a class="adminOnly" data-view-link="admin">Admin control</a>
+      <button class="themeToggleBtn" type="button" data-theme-toggle>White mode</button>
+      <a href="login.html">Logout</a>
+    </nav>
+  </aside>
+  <main class="main">
+    <div class="top">
+      <div>
+        <h1 id="title">Welcome back.</h1>
+        <p class="sub" id="viewSub">Premium trading dashboard for portfolio, orders, risk and domain access.</p>
+      </div>
+      <div class="topActions">
+        <button class="iconBtn dashMenuBtn" id="dashMenuBtn" type="button" aria-label="Open dashboard menu">
+          <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+        <div class="rightActions">
+          <button class="iconBtn" id="notificationBtn" type="button" aria-label="Notifications">
+            <span class="notifDot"></span>
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg>
+          </button>
+          <button class="profileBtn" id="profileBtn" type="button" aria-label="Profile menu">
+            <span class="avatar" id="profileInitial">U</span>
+          </button>
+        </div>
+        <div class="dropdown" id="notificationMenu">
+          <h3>Notifications</h3>
+          <p>Recent account and market activity.</p>
+          <div class="miniList">
+            <div><span>Login verified</span><b>Now</b></div>
+            <div><span>Margin buffer healthy</span><b>OK</b></div>
+            <div><span>RELIANCE alert active</span><b>Live</b></div>
+          </div>
+        </div>
+        <div class="dropdown" id="profileMenu">
+          <h3 id="profileMenuName">User</h3>
+          <p id="profileMenuDomain">user.meridianmarkets.in</p>
+          <div class="miniList">
+            <div><span>Role</span><b id="profileMenuRole">User</b></div>
+            <div><span>Session</span><b>Active</b></div>
+            <div><span>Security</span><b>2FA</b></div>
+          </div>
+          <a class="btn primary" href="login.html" style="width:100%;margin-top:14px;">Logout</a>
+        </div>
+      </div>
+    </div>
+
+    <section class="view active" id="view-overview">
+      <div class="cards">
+        <button class="card" data-open-view="portfolio"><div class="label">Portfolio value</div><div class="value">Rs 18.42L</div><div class="trend">+2.84% today</div></button>
+        <button class="card" data-open-view="orders"><div class="label">Active orders</div><div class="value">14</div><div class="trend">6 executed</div></button>
+        <button class="card" data-open-view="risk"><div class="label">Margin used</div><div class="value">42%</div><div class="trend down">-3.1% risk</div></button>
+        <button class="card" data-open-view="domains"><div class="label">Domain</div><div class="value" id="domainShort">User</div><div class="trend">Verified</div></button>
+      </div>
+      <div class="grid">
+        <section class="panel">
+          <div class="panelHead"><h2>Portfolio performance</h2><span class="chip">LIVE</span></div>
+          <div class="chart">
+            <svg viewBox="0 0 800 300" preserveAspectRatio="none">
+              <defs><linearGradient id="area" x1="0" x2="0" y1="0" y2="1"><stop stop-color="#00C896" stop-opacity=".34"/><stop offset="1" stop-color="#00C896" stop-opacity="0"/></linearGradient></defs>
+              <path d="M0 240 L70 224 L145 230 L220 170 L290 190 L365 120 L440 145 L515 86 L590 112 L665 62 L735 84 L800 38 L800 300 L0 300 Z" fill="url(#area)"/>
+              <path d="M0 240 L70 224 L145 230 L220 170 L290 190 L365 120 L440 145 L515 86 L590 112 L665 62 L735 84 L800 38" fill="none" stroke="#00C896" stroke-width="3"/>
+            </svg>
+          </div>
+        </section>
+        <section class="panel">
+          <div class="panelHead"><h2>Quick actions</h2><span class="chip" id="roleChip">USER</span></div>
+          <div class="list">
+            <div class="item"><div><b>Place equity order</b><span>NSE cash market ticket</span></div><strong>OPEN</strong></div>
+            <div class="item"><div><b>Add funds</b><span>UPI and net banking enabled</span></div><strong>READY</strong></div>
+            <div class="item"><div><b>Download report</b><span>Tax P&L and ledger summary</span></div><strong>PDF</strong></div>
+          </div>
+        </section>
+      </div>
+      <div class="split">
+        <section class="panel"><div class="panelHead"><h2>Market watch</h2><span class="chip">TODAY</span></div><table><thead><tr><th>Symbol</th><th>Price</th><th>Move</th></tr></thead><tbody><tr><td>NIFTY 50</td><td>23,847.65</td><td class="trend">+0.91%</td></tr><tr><td>SENSEX</td><td>78,402.10</td><td class="trend">+0.84%</td></tr><tr><td>USD/INR</td><td>83.42</td><td class="trend">+0.05%</td></tr></tbody></table></section>
+        <section class="panel"><div class="panelHead"><h2>Alerts</h2><span class="chip">3 ACTIVE</span></div><div class="list"><div class="item"><div><b>RELIANCE above 2,950</b><span>Price alert triggered</span></div><strong>LIVE</strong></div><div class="item"><div><b>Margin below 45%</b><span>Risk buffer restored</span></div><strong>OK</strong></div></div></section>
+      </div>
+    </section>
+
+    <section class="view" id="view-portfolio">
+      <div class="toolbar"><button class="btn primary" data-missing-link>Add holding</button><button class="btn" data-missing-link>Export holdings</button><button class="btn" data-missing-link>Rebalance</button></div>
+      <div class="cards"><div class="card"><div class="label">Invested</div><div class="value">Rs 15.91L</div><div class="trend">Across 12 holdings</div></div><div class="card"><div class="label">Unrealized P&L</div><div class="value">Rs 2.51L</div><div class="trend">+15.78%</div></div><div class="card"><div class="label">XIRR</div><div class="value">18.6%</div><div class="trend">Trailing 12 months</div></div><div class="card"><div class="label">Cash balance</div><div class="value">Rs 1.2L</div><div class="trend">Available</div></div></div>
+      <section class="panel"><div class="panelHead"><h2>Holdings breakdown</h2><span class="chip">TOP POSITIONS</span></div><table><thead><tr><th>Symbol</th><th>Qty</th><th>Avg</th><th>Value</th><th>P&L</th></tr></thead><tbody><tr><td>RELIANCE</td><td>42</td><td>2,640</td><td>Rs 1,23,765</td><td class="trend">+Rs 12,840</td></tr><tr><td>HDFC BANK</td><td>88</td><td>1,588</td><td>Rs 1,47,699</td><td class="trend">+Rs 8,410</td></tr><tr><td>TCS</td><td>16</td><td>3,965</td><td>Rs 61,473</td><td class="down">-Rs 1,920</td></tr><tr><td>INFY</td><td>55</td><td>1,421</td><td>Rs 82,659</td><td class="trend">+Rs 4,780</td></tr></tbody></table></section>
+    </section>
+
+    <section class="view" id="view-orders">
+      <div class="toolbar"><button class="btn primary" data-missing-link>New order</button><button class="btn" data-missing-link>Cancel selected</button><button class="btn" data-missing-link>Order history</button></div>
+      <div class="split">
+        <section class="panel"><div class="panelHead"><h2>Open orders</h2><span class="chip">14 ACTIVE</span></div><table><thead><tr><th>Symbol</th><th>Type</th><th>Qty</th><th>Status</th></tr></thead><tbody><tr><td>RELIANCE</td><td>Limit buy</td><td>20</td><td class="gold">Pending</td></tr><tr><td>BANKNIFTY</td><td>SL-M sell</td><td>15</td><td class="trend">Placed</td></tr><tr><td>INFY</td><td>GTT buy</td><td>25</td><td class="gold">Waiting</td></tr></tbody></table></section>
+        <section class="panel"><div class="panelHead"><h2>Executed today</h2><span class="chip">6 FILLED</span></div><div class="list"><div class="item"><div><b>HDFC BANK bought</b><span>25 shares at Rs 1,678.40</span></div><strong>FILLED</strong></div><div class="item"><div><b>TCS sold</b><span>4 shares at Rs 3,842.10</span></div><strong>FILLED</strong></div><div class="item"><div><b>NIFTY CE exited</b><span>Intraday option position</span></div><strong>FILLED</strong></div></div></section>
+      </div>
+    </section>
+
+    <section class="view" id="view-domains">
+      <div class="cards"><div class="card"><div class="label">Current domain</div><div class="value" id="currentDomain">User</div><div class="trend">Session verified</div></div><div class="card"><div class="label">Devices</div><div class="value">3</div><div class="trend">Trusted</div></div><div class="card"><div class="label">2FA</div><div class="value">On</div><div class="trend">OTP enabled</div></div><div class="card"><div class="label">Last login</div><div class="value">09 Jul</div><div class="trend">13:58 IST</div></div></div>
+      <section class="panel"><div class="panelHead"><h2>Domain access</h2><span class="chip">ACCESS CONTROL</span></div><div class="list"><div class="item"><div><b>user.meridianmarkets.in</b><span>Portfolio, orders and reports access</span></div><strong>ACTIVE</strong></div><div class="item"><div><b>admin.meridianmarkets.in</b><span>Admin control and audit access</span></div><strong id="adminDomainState">LOCKED</strong></div><div class="item"><div><b>api.meridianmarkets.in</b><span>Trading API endpoint</span></div><strong>READY</strong></div></div></section>
+    </section>
+
+    <section class="view" id="view-risk">
+      <div class="cards"><div class="card"><div class="label">Risk score</div><div class="value">Low</div><div class="trend">Healthy</div></div><div class="card"><div class="label">Exposure</div><div class="value">58%</div><div class="trend">Within limit</div></div><div class="card"><div class="label">Stop losses</div><div class="value">9</div><div class="trend">Protected</div></div><div class="card"><div class="label">VaR</div><div class="value">1.8%</div><div class="trend down">Monitor</div></div></div>
+      <div class="split"><section class="panel"><div class="panelHead"><h2>Risk rules</h2><span class="chip">ACTIVE</span></div><div class="list"><div class="item"><div><b>Single stock cap</b><span>Max 18% allocation per equity</span></div><strong>OK</strong></div><div class="item"><div><b>Intraday loss cap</b><span>Stops trading after Rs 25,000 loss</span></div><strong>ON</strong></div><div class="item"><div><b>Derivative exposure</b><span>F&O exposure below approved margin</span></div><strong>OK</strong></div></div></section><section class="panel"><div class="panelHead"><h2>Sector exposure</h2><span class="chip">DIVERSIFIED</span></div><table><tbody><tr><td>Financials</td><td>32%</td></tr><tr><td>Technology</td><td>24%</td></tr><tr><td>Energy</td><td>18%</td></tr><tr><td>Cash</td><td>9%</td></tr></tbody></table></section></div>
+    </section>
+
+    <section class="view" id="view-reports">
+      <div class="toolbar"><button class="btn primary" data-missing-link>Download tax P&L</button><button class="btn" data-missing-link>Download ledger</button><button class="btn" data-missing-link>Email reports</button></div>
+      <div class="grid"><section class="panel"><div class="panelHead"><h2>Available reports</h2><span class="chip">FY 2026</span></div><div class="list"><div class="item"><div><b>Capital gains statement</b><span>Short-term and long-term holdings</span></div><strong>PDF</strong></div><div class="item"><div><b>Contract notes</b><span>Daily trade contract summaries</span></div><strong>ZIP</strong></div><div class="item"><div><b>Ledger statement</b><span>Funds, charges and settlement ledger</span></div><strong>XLS</strong></div></div></section><section class="panel"><div class="panelHead"><h2>Charges summary</h2><span class="chip">MONTH</span></div><table><tbody><tr><td>Brokerage</td><td>Rs 1,240</td></tr><tr><td>Exchange charges</td><td>Rs 418</td></tr><tr><td>GST</td><td>Rs 298</td></tr><tr><td>Total</td><td>Rs 1,956</td></tr></tbody></table></section></div>
+    </section>
+
+    <section class="view adminOnly" id="view-admin">
+      <div class="cards"><div class="card"><div class="label">Users online</div><div class="value">1,284</div><div class="trend">Live sessions</div></div><div class="card"><div class="label">Pending KYC</div><div class="value">37</div><div class="trend down">Review needed</div></div><div class="card"><div class="label">System health</div><div class="value">99.98%</div><div class="trend">All services green</div></div><div class="card"><div class="label">Audit queue</div><div class="value">12</div><div class="trend gold">Open</div></div></div>
+      <section class="panel"><div class="panelHead"><h2>Admin control center</h2><span class="chip">ADMIN</span></div><table><thead><tr><th>Task</th><th>Owner</th><th>Status</th></tr></thead><tbody><tr><td>KYC batch review</td><td>Ops</td><td class="gold">Pending</td></tr><tr><td>Trading halt monitor</td><td>Risk</td><td class="trend">Clear</td></tr><tr><td>Domain audit</td><td>Security</td><td class="trend">Complete</td></tr></tbody></table></section>
+    </section>
+  </main>
+</div>
+<script>
+  const role = sessionStorage.getItem('meridianRole') || 'User';
+  const domain = sessionStorage.getItem('meridianDomain') || 'user.meridianmarkets.in';
+  const userName = sessionStorage.getItem('meridianUserName') || role;
+  const titles = {
+    overview: role === 'Admin' ? 'Admin dashboard.' : 'Welcome back.',
+    portfolio: 'Portfolio.',
+    orders: 'Orders.',
+    domains: 'Domains.',
+    risk: 'Risk controls.',
+    reports: 'Reports.',
+    admin: 'Admin control.'
+  };
+  const subtitles = {
+    overview: 'Premium trading dashboard for portfolio, orders, risk and domain access.',
+    portfolio: 'Analyze holdings, allocation, P&L and available cash in one place.',
+    orders: 'Track open, filled and conditional orders across market segments.',
+    domains: 'Manage login domains, trusted devices and account access controls.',
+    risk: 'Review exposure, margin use, stop losses and concentration limits.',
+    reports: 'Download tax, ledger, contract note and charge reports.',
+    admin: 'Monitor users, KYC queues, audits and platform health.'
+  };
+  document.body.classList.toggle('admin', role === 'Admin');
+  document.getElementById('roleLabel').textContent = userName;
+  document.getElementById('roleChip').textContent = role.toUpperCase();
+  document.getElementById('domainLabel').textContent = domain;
+  document.getElementById('domainShort').textContent = role;
+  document.getElementById('currentDomain').textContent = role;
+  document.getElementById('adminDomainState').textContent = role === 'Admin' ? 'ACTIVE' : 'LOCKED';
+  document.getElementById('profileInitial').textContent = userName.trim().charAt(0).toUpperCase();
+  document.getElementById('profileMenuName').textContent = userName;
+  document.getElementById('profileMenuDomain').textContent = domain;
+  document.getElementById('profileMenuRole').textContent = role;
+  const notificationBtn = document.getElementById('notificationBtn');
+  const profileBtn = document.getElementById('profileBtn');
+  const dashMenuBtn = document.getElementById('dashMenuBtn');
+  const dashAside = document.querySelector('aside');
+  const notificationMenu = document.getElementById('notificationMenu');
+  const profileMenu = document.getElementById('profileMenu');
+  function closeMenus(except){
+    if(except !== notificationMenu) notificationMenu.classList.remove('show');
+    if(except !== profileMenu) profileMenu.classList.remove('show');
+  }
+  notificationBtn.addEventListener('click', (event)=>{
+    event.stopPropagation();
+    notificationMenu.classList.toggle('show');
+    closeMenus(notificationMenu);
+  });
+  profileBtn.addEventListener('click', (event)=>{
+    event.stopPropagation();
+    profileMenu.classList.toggle('show');
+    closeMenus(profileMenu);
+  });
+  document.addEventListener('click', ()=>closeMenus());
+  dashMenuBtn.addEventListener('click', (event)=>{
+    event.stopPropagation();
+    dashAside.classList.add('open');
+    document.body.classList.add('dashMenuOpen');
+  });
+  dashAside.querySelectorAll('[data-view-link], a[href=\"login.html\"]').forEach(link=>link.addEventListener('click', ()=>{
+    if(window.innerWidth <= 1080){
+      dashAside.classList.remove('open');
+      document.body.classList.remove('dashMenuOpen');
+    }
+  }));
+  function openView(name){
+    if(name === 'admin' && role !== 'Admin') name = 'overview';
+    document.querySelectorAll('.view').forEach(view=>view.classList.toggle('active', view.id === `view-${name}`));
+    document.querySelectorAll('[data-view-link]').forEach(link=>link.classList.toggle('active', link.dataset.viewLink === name));
+    document.getElementById('title').textContent = titles[name];
+    document.getElementById('viewSub').textContent = subtitles[name];
+  }
+  document.querySelectorAll('[data-view-link]').forEach(link=>link.addEventListener('click', ()=>openView(link.dataset.viewLink)));
+  document.querySelectorAll('[data-open-view]').forEach(card=>card.addEventListener('click', ()=>openView(card.dataset.openView)));
+  document.getElementById('dashboardLogo').addEventListener('click', (event)=>{
+    event.preventDefault();
+    openView('overview');
+    dashAside.classList.remove('open');
+    document.body.classList.remove('dashMenuOpen');
+  });
+  document.querySelectorAll('[data-missing-link]').forEach(button=>button.addEventListener('click', ()=>{ window.location.href = '404.html'; }));
+  openView('overview');
+  document.addEventListener('keydown', (event)=>{
+    if(event.key === 'Escape'){
+      dashAside.classList.remove('open');
+      document.body.classList.remove('dashMenuOpen');
+      closeMenus();
+    }
+  });
+</script>
+<script>
+(function(){
+  const key = 'stacklyThemeMode';
+  function applyTheme(mode){
+    document.body.classList.toggle('lightMode', mode === 'light');
+    document.querySelectorAll('[data-theme-toggle]').forEach(btn=>{
+      btn.textContent = mode === 'light' ? 'Dark mode' : 'White mode';
+    });
+  }
+  applyTheme(localStorage.getItem(key) || 'dark');
+  document.addEventListener('click', (event)=>{
+    const btn = event.target.closest('[data-theme-toggle]');
+    if(!btn) return;
+    event.preventDefault();
+    const next = document.body.classList.contains('lightMode') ? 'dark' : 'light';
+    localStorage.setItem(key, next);
+    applyTheme(next);
+  });
+})();
+</script>
+<script>
+(function(){
+  const key = 'stacklyReturnState';
+  function restorePosition(){
+    const raw = sessionStorage.getItem(key);
+    if(!raw) return;
+    let state;
+    try{ state = JSON.parse(raw); }catch(e){ return; }
+    const current = location.pathname.split('/').pop() || 'index.html';
+    const target = (state.page || '').split('/').pop() || 'index.html';
+    if(current !== target) return;
+    sessionStorage.removeItem(key);
+    const root = document.documentElement;
+    const previousBehavior = root.style.scrollBehavior;
+    root.style.scrollBehavior = 'auto';
+    requestAnimationFrame(()=>{
+      window.scrollTo({top:Number(state.y) || 0,left:Number(state.x) || 0,behavior:'auto'});
+      setTimeout(()=>{ root.style.scrollBehavior = previousBehavior; }, 80);
+    });
+  }
+  function saveAndOpen404(event){
+    const trigger = event.target.closest('a[href="404.html"], [data-missing-link]');
+    if(!trigger) return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    sessionStorage.setItem(key, JSON.stringify({page:location.pathname.split('/').pop() || 'index.html', x:window.scrollX, y:window.scrollY}));
+    window.location.href = '404.html';
+  }
+  restorePosition();
+  document.addEventListener('click', saveAndOpen404, true);
+})();
+</script>
+</body>
+</html>
+
+
+
