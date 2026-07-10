@@ -54,9 +54,17 @@
     if(raw){
       try{
         const state = JSON.parse(raw);
-        window.location.href = state.page || 'index.html';
-        return;
+        const savedPage = (state.page || '').split('/').pop();
+        const refPage = document.referrer ? new URL(document.referrer).pathname.split('/').pop() : '';
+        if(!refPage || refPage === savedPage){
+          window.location.href = state.page || 'index.html';
+          return;
+        }
       }catch(e){}
+    }
+    if(history.length > 1){
+      history.back();
+      return;
     }
     if(document.referrer){
       window.location.href = document.referrer;

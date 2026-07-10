@@ -174,7 +174,7 @@
     .profileBtn{padding:0;justify-content:center;}
     h1{font-size:32px;}
   }
-  @media(min-width:761px){
+  @media(min-width:1081px){
     .shell{grid-template-columns:280px minmax(0,1fr)!important;}
     aside{
       display:flex!important;position:relative!important;inset:auto!important;z-index:auto!important;
@@ -187,6 +187,44 @@
     aside{padding-top:72px!important;}
     aside.open{display:flex!important;}
     .dashMenuBtn.open{position:fixed;top:18px;left:16px;z-index:1002;background:var(--ink-card);}
+  }
+
+  /* ===== OVERLAP FIX ===== */
+  .card:hover,.panel:hover,.btn:hover,.iconBtn:hover,.profileBtn:hover,.item:hover,nav a.active,nav a:hover{
+    transform:none!important;
+  }
+  .card,.panel,.item{position:relative;}
+  .cards,.grid,.split,.list{align-items:stretch;}
+  .card,.panel{overflow-wrap:anywhere;}
+  .item{align-items:flex-start;}
+  .item > div{min-width:0;}
+  .item strong{flex-shrink:0;}
+  .panelHead{flex-wrap:wrap;}
+  .toolbar .btn{white-space:normal;text-align:center;}
+  .view.adminOnly{display:none!important;}
+  body.admin .view.adminOnly.active{display:block!important;}
+  body.admin nav .adminOnly{display:block!important;}
+  @media(max-width:1080px){
+    .shell{display:block!important;}
+    aside{display:none!important;position:fixed!important;inset:0!important;z-index:1000!important;background:var(--ink)!important;padding:72px 28px 28px!important;overflow:auto!important;}
+    aside.open{display:flex!important;}
+    .main{width:100%!important;padding:26px 20px!important;}
+    .dashMenuBtn{display:inline-flex!important;}
+    .cards{grid-template-columns:repeat(2,minmax(0,1fr))!important;}
+    .grid,.split{grid-template-columns:1fr!important;}
+  }
+  @media(max-width:760px){
+    .main{padding:20px 16px!important;}
+    .cards{grid-template-columns:1fr!important;}
+    .topActions{align-items:flex-start;}
+    .rightActions{flex-shrink:0;}
+    .dropdown{top:48px;}
+    .panel{overflow-x:auto;}
+  }
+  @media(max-width:420px){
+    .main{padding:18px 12px!important;}
+    .topActions{display:grid;grid-template-columns:40px 1fr;width:100%;}
+    .rightActions{justify-self:end;}
   }
 </style>
 </head>
